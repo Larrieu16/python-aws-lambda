@@ -1,7 +1,9 @@
 import json
 import boto3
 import uuid
+import os
 from datetime import datetime
+
 
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.environ["DYNAMODB_TABLE"])  
