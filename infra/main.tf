@@ -115,3 +115,7 @@ module "update_item_lambda" {
 module "dynamodb" {
   source = "./modules/dynamodb"  # caminho relativo para a pasta do módulo
 }
+
+module "cognito" {
+  source = "./modules/cognito"
+}
