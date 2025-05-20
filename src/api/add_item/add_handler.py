@@ -35,7 +35,6 @@ def lambda_handler(event, context):
                 "body": json.dumps({"error": "Date must be in YYYYMMDD format."})
             }
         
-        
         item_id = str(uuid.uuid4())
         item = {
             "PK": f"LIST#{date}",  
