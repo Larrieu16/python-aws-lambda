@@ -44,6 +44,10 @@ resource "aws_cognito_user_pool_client" "cognito_client" {
 }
 
 resource "aws_cognito_user_pool_domain" "cognito_domain" {
-  domain       = "lnsi-domain"
+  domain       = "lnsi-domain-${random_id.suffix.hex}"
   user_pool_id = "${aws_cognito_user_pool.user_pool.id}"
+}
+
+resource "random_id" "suffix" {
+  byte_length = 4
 }
