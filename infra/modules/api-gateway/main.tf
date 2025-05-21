@@ -47,8 +47,6 @@ resource "aws_lambda_permission" "api_gw" {
 
 resource "aws_apigatewayv2_stage" "lambda" {
   api_id      = aws_apigatewayv2_api.lambda.id
-  name        = "dev"
+   name        = "$default"
   auto_deploy = true
-
 }
-

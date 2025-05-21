@@ -119,8 +119,8 @@ module "cognito" {
   source = "./modules/cognito"
 }
 
-module "apigateway" {
-  source              = "./modules/apigateway"
+module "api_gateway" {
+  source              = "./modules/api-gateway"
   lambda_invoke_arn   = module.hello_lambda.lambda_invoke_arn
   lambda_function_name = module.hello_lambda.function_name
   cognito_user_pool_id = module.cognito.user_pool_id
@@ -128,7 +128,7 @@ module "apigateway" {
 }
 
 output "api_gateway_url" {
-  value = module.apigateway.api_endpoint
+  value = module.api_gateway.api_endpoint
 }
 
 output "cognito_user_pool_id" {
