@@ -119,3 +119,13 @@ module "dynamodb" {
 module "cognito" {
   source = "./modules/cognito"
 }
+
+module "apigateway" {
+  source              = "./modules/apigateway"
+  lambda_invoke_arn   = module.hello_lambda.lambda_invoke_arn
+  lambda_function_name = module.hello_lambda.function_name
+}
+
+output "api_gateway_url" {
+  value = module.apigateway.api_endpoint
+}
