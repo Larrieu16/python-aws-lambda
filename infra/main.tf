@@ -1,4 +1,3 @@
-
 # Resources
 resource "aws_iam_role" "lambda_exec" {
   name = "lambda_exec_role"
@@ -119,3 +118,24 @@ module "dynamodb" {
 module "cognito" {
   source = "./modules/cognito"
 }
+
+module "api_gateway" {
+  source              = "./modules/api-gateway"
+  lambda_invoke_arn   = module.hello_lambda.lambda_invoke_arn
+  lambda_function_name = module.hello_lambda.function_name
+  cognito_user_pool_id = module.cognito.user_pool_id
+  cognito_client_id   = module.cognito.client_id
+}
+
+output "api_gateway_url" {
+  value = module.api_gateway.api_endpoint
+}
+
+output "cognito_user_pool_id" {
+  value = module.cognito.user_pool_id
+}
+
+output "cognito_client_id" {
+  value = module.cognito.client_id
+}
+
