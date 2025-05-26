@@ -76,43 +76,43 @@ module "hello_lambda" {
 }
 
 module "create_item_lambda" {
-  source                = "./modules/lambda"
-  function_name         = "create-item"
-  filename              = data.archive_file.add_item_zip.output_path
-  handler               = "add_handler.lambda_handler"
-  role_arn              = aws_iam_role.lambda_exec.arn
+  source        = "./modules/lambda"
+  function_name = "create-item"
+  filename      = data.archive_file.add_item_zip.output_path
+  handler       = "add_handler.lambda_handler"
+  role_arn      = aws_iam_role.lambda_exec.arn
   environment_variables = {
-     DYNAMODB_TABLE = module.dynamodb.table_name
+    DYNAMODB_TABLE = module.dynamodb.table_name
 
   }
 }
 
 module "delete_item_lambda" {
-  source                = "./modules/lambda"
-  function_name         = "delete-item"
-  filename              = data.archive_file.delete_item_zip.output_path
-  handler               = "delete_handler.lambda_handler"
-  role_arn              = aws_iam_role.lambda_exec.arn
+  source        = "./modules/lambda"
+  function_name = "delete-item"
+  filename      = data.archive_file.delete_item_zip.output_path
+  handler       = "delete_handler.lambda_handler"
+  role_arn      = aws_iam_role.lambda_exec.arn
   environment_variables = {
     DYNAMODB_TABLE = module.dynamodb.table_name
   }
 }
 
 module "update_item_lambda" {
-  source                = "./modules/lambda"
-  function_name         = "update-item"
-  filename              = data.archive_file.update_item_zip.output_path
-  handler               = "update_handler.lambda_handler"
-  role_arn              = aws_iam_role.lambda_exec.arn
+  source        = "./modules/lambda"
+  function_name = "update-item"
+  filename      = data.archive_file.update_item_zip.output_path
+  handler       = "update_handler.lambda_handler"
+  role_arn      = aws_iam_role.lambda_exec.arn
   environment_variables = {
-     DYNAMODB_TABLE = module.dynamodb.table_name
+    DYNAMODB_TABLE = module.dynamodb.table_name
 
   }
-  
+
 }
 
 module "dynamodb" {
-  source = "./modules/dynamodb"  # caminho relativo para a pasta do módulo
+  source = "./modules/dynamodb" # caminho relativo para a pasta do módulo
 }
 
 module "cognito" {
@@ -120,11 +120,11 @@ module "cognito" {
 }
 
 module "api_gateway" {
-  source              = "./modules/api-gateway"
-  lambda_invoke_arn   = module.hello_lambda.lambda_invoke_arn
+  source               = "./modules/api-gateway"
+  lambda_invoke_arn    = module.hello_lambda.lambda_invoke_arn
   lambda_function_name = module.hello_lambda.function_name
   cognito_user_pool_id = module.cognito.user_pool_id
-  cognito_client_id   = module.cognito.client_id
+  cognito_client_id    = module.cognito.client_id
 }
 
 output "api_gateway_url" {
