@@ -8,7 +8,11 @@ variable "lambda_get_items_invoke_arn" {
   type        = string
 }
 
-variable "lambda_function_name" {
+variable "lambda_hello_function_name" {
+  type = string
+}
+
+variable "lambda_get_items_function_name" {
   type = string
 }
 
