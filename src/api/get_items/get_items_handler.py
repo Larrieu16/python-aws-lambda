@@ -10,7 +10,6 @@ table = dynamodb.Table(os.environ["DYNAMODB_TABLE"])
 def lambda_handler(event, context):
 
     try:
-
         user_id = (
             event.get("requestContext", {})
             .get("authorizer", {})
