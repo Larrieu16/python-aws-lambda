@@ -3,7 +3,7 @@ import json
 from api.get_items.get_items_handler import lambda_handler
 
 
-def test_lambda_handler_success(mock_os_environ, sample_authorized_event, mock_table):
+def test_lambda_handler_success(sample_authorized_event, mock_table):
     user_id = sample_authorized_event["requestContext"]["authorizer"]["claims"]["sub"]
 
     mock_db_items = [
@@ -34,14 +34,14 @@ def test_lambda_handler_success(mock_os_environ, sample_authorized_event, mock_t
     assert json.loads(response["body"]) == {"items": mock_db_items}
 
 
-def test_lambda_handler_unauthorized(mock_os_environ, unauthorized_event, mock_table):
+def test_lambda_handler_unauthorized(unauthorized_event, mock_table):
     response = lambda_handler(unauthorized_event, None)
 
     assert response["statusCode"] == 401
     assert json.loads(response["body"]) == {"error": "Unauthorized"}
 
 
-def test_lambda_handler_exception(mock_os_environ, sample_authorized_event, mock_table):
+def test_lambda_handler_exception(sample_authorized_event, mock_table):
     user_id = sample_authorized_event["requestContext"]["authorizer"]["claims"]["sub"]
 
     mock_table.query.side_effect = Exception("Erro simulado")

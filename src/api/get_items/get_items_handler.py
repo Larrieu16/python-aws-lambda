@@ -4,10 +4,10 @@ import os
 import boto3
 from boto3.dynamodb.conditions import Key
 
+dynamodb = boto3.resource("dynamodb")
+table = dynamodb.Table(os.environ["DYNAMODB_TABLE"])
 
 def lambda_handler(event, context):
-    dynamodb = boto3.resource("dynamodb")
-    table = dynamodb.Table(os.environ["DYNAMODB_TABLE"])
 
     try:
 

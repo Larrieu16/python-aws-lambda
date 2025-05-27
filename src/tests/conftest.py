@@ -1,29 +1,27 @@
-# conftest.py
 import os
 from unittest.mock import MagicMock, patch
 
 import pytest
 
+os.environ["DYNAMODB_TABLE"] = "test-table"
 
-@pytest.fixture
-def mock_os_environ():
-    """Fixture para mockar a variável de ambiente DYNAMODB_TABLE."""
-    with patch.dict(
-        os.environ, {"DYNAMODB_TABLE": "test-table"}, clear=True
-    ) as patched_env:
-        yield patched_env
+
+@pytest.fixture(autouse=True, scope="session")
+def setup_environment():
+    """Fixture para garantir que a variável de ambiente esteja definida para toda a sessão de teste."""
+
+    assert "DYNAMODB_TABLE" in os.environ
+    yield
 
 
 @pytest.fixture
 def mock_table():
     """Fixture para mockar o boto3.resource e o cliente DynamoDB."""
-    with patch("boto3.resource") as mock_resource_constructor:
-        mock_dynamodb_resource = MagicMock()
-        mock_table = MagicMock()
+    # Criar um mock para a tabela
+    mock_table = MagicMock()
 
-        mock_resource_constructor.return_value = mock_dynamodb_resource
-        mock_dynamodb_resource.Table.return_value = mock_table
-
+    # Patch diretamente o objeto table no módulo get_items_handler
+    with patch("api.get_items.get_items_handler.table", mock_table):
         yield mock_table
 
 
