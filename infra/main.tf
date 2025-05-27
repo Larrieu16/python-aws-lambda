@@ -27,6 +27,8 @@ resource "aws_iam_role_policy" "lambda_inline_policy" {
           "dynamodb:UpdateItem",
           "dynamodb:DeleteItem",
           "dynamodb:GetItem",
+          "dynamodb:query",
+          "dynamodb:Scan"
         ],
         Resource = module.dynamodb.table_arn
       }
@@ -63,6 +65,12 @@ data "archive_file" "update_item_zip" {
   type        = "zip"
   source_dir  = "${path.module}/../src/api/update_item"
   output_path = "${path.module}/build/update.zip"
+}
+
+data "archive_file" "get_items_zip" {
+  type        = "zip"
+  source_dir  = "${path.module}/../src/api/get_items"
+  output_path = "${path.module}/build/get-items.zip"
 }
 
 # Lambda Modules
@@ -111,6 +119,17 @@ module "update_item_lambda" {
 
 }
 
+module "get_items_lambda" {
+  source        = "./modules/lambda"
+  function_name = "get-items"
+  filename      = data.archive_file.get_items_zip.output_path
+  handler       = "get_items_handler.lambda_handler"
+  role_arn      = aws_iam_role.lambda_exec.arn
+  environment_variables = {
+    DYNAMODB_TABLE = module.dynamodb.table_name
+  }
+}
+
 module "dynamodb" {
   source = "./modules/dynamodb" # caminho relativo para a pasta do módulo
 }
@@ -120,11 +139,13 @@ module "cognito" {
 }
 
 module "api_gateway" {
-  source               = "./modules/api-gateway"
-  lambda_invoke_arn    = module.hello_lambda.lambda_invoke_arn
-  lambda_function_name = module.hello_lambda.function_name
-  cognito_user_pool_id = module.cognito.user_pool_id
-  cognito_client_id    = module.cognito.client_id
+  source                         = "./modules/api-gateway"
+  lambda_hello_invoke_arn        = module.hello_lambda.lambda_invoke_arn
+  lambda_get_items_invoke_arn    = module.get_items_lambda.lambda_invoke_arn
+  lambda_hello_function_name     = module.hello_lambda.function_name
+  lambda_get_items_function_name = module.get_items_lambda.function_name
+  cognito_user_pool_id           = module.cognito.user_pool_id
+  cognito_client_id              = module.cognito.client_id
 }
 
 output "api_gateway_url" {

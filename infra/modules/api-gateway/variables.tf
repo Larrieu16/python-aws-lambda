@@ -1,9 +1,18 @@
-variable "lambda_invoke_arn" {
-  description = "ARN de invocação da função Lambda"
+variable "lambda_hello_invoke_arn" {
+  description = "ARN de invocação da função Lambda hello"
   type        = string
 }
 
-variable "lambda_function_name" {
+variable "lambda_get_items_invoke_arn" {
+  description = "ARN de invocação da função Lambda get_items"
+  type        = string
+}
+
+variable "lambda_hello_function_name" {
+  type = string
+}
+
+variable "lambda_get_items_function_name" {
   type = string
 }
 
