@@ -2,12 +2,12 @@ import json
 import os
 
 import boto3
-
-dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table(os.environ["DYNAMODB_TABLE"])
+from boto3.dynamodb.conditions import Key
 
 
 def lambda_handler(event, context):
+    dynamodb = boto3.resource("dynamodb")
+    table = dynamodb.Table(os.environ["DYNAMODB_TABLE"])
 
     try:
 
@@ -22,10 +22,8 @@ def lambda_handler(event, context):
             return {"statusCode": 401, "body": json.dumps({"error": "Unauthorized"})}
 
         response = table.query(
-            KeyConditionExpression=boto3.dynamodb.conditions.Key("PK").eq(
-                f"USER#{user_id}"
-            )
-            & boto3.dynamodb.conditions.Key("SK").begins_with("ITEM#")
+            KeyConditionExpression=Key("PK").eq(f"USER#{user_id}")
+            & Key("SK").begins_with("ITEM#")
         )
 
         items = response.get("Items", [])
@@ -37,4 +35,7 @@ def lambda_handler(event, context):
 
     except Exception as e:
         print(f"Error querying items: {e}")
-        return {"statusCode": 500, "body": {"error": "Internal Server Error"}}
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"error": "Internal Server Error"}),
+        }
