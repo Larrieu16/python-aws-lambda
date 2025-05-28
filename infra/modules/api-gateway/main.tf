@@ -17,6 +17,13 @@ resource "aws_apigatewayv2_integration" "get_items_python" {
   integration_method = "POST"
 }
 
+resource "aws_apigatewayv2_integration" "create_item_python" {
+  api_id             = aws_apigatewayv2_api.lambda.id
+  integration_uri    = var.lambda_create_item_invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
+
 data "aws_region" "current" {}
 
 resource "aws_apigatewayv2_authorizer" "cognito" {
@@ -47,6 +54,14 @@ resource "aws_apigatewayv2_route" "get_items_python" {
   authorizer_id      = aws_apigatewayv2_authorizer.cognito.id
 }
 
+resource "aws_apigatewayv2_route" "create_item_python" {
+  api_id             = aws_apigatewayv2_api.lambda.id
+  route_key          = "POST /lista-tarefa"
+  target             = "integrations/${aws_apigatewayv2_integration.create_item_python.id}"
+  authorization_type = "JWT"
+  authorizer_id      = aws_apigatewayv2_authorizer.cognito.id
+}
+
 resource "aws_cloudwatch_log_group" "api_gw" {
   name              = "/aws/api_gw/${aws_apigatewayv2_api.lambda.name}"
   retention_in_days = 30
@@ -64,6 +79,14 @@ resource "aws_lambda_permission" "get_items_permission" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = var.lambda_get_items_function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/lista-tarefa"
+}
+
+resource "aws_lambda_permission" "create_item_permission" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = var.lambda_create_item_function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/lista-tarefa"
 }
