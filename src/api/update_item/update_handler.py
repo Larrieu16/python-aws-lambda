@@ -1,15 +1,18 @@
 import json
-import boto3
 import os
+
+import boto3
 from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table(os.environ["DYNAMODB_TABLE"]) 
+TABLE_NAME = os.environ['DYNAMODB_TABLE']
+table = dynamodb.Table(TABLE_NAME)
+
 
 def lambda_handler(event, context):
     try:
         body = json.loads(event.get("body", "{}"))
-        pk = body.get("pk")       # e.g., "20250515"
+        pk = body.get("pk")  # e.g., "20250515"
         item_id = body.get("itemId")  # e.g., "1234-5678"
         new_name = body.get("name")
         new_status = body.get("status")
@@ -18,21 +21,15 @@ def lambda_handler(event, context):
         if not pk or not item_id:
             return {
                 "statusCode": 400,
-                "body": json.dumps({"error": "Both 'pk' and 'itemId' are required."})
+                "body": json.dumps({"error": "Both 'pk' and 'itemId' are required."}),
             }
 
-        key = {
-            "PK": f"LIST#{pk}",
-            "SK": f"ITEM#{item_id}"
-        }
+        key = {"PK": f"LIST#{pk}", "SK": f"ITEM#{item_id}"}
 
         # Verifica se o item existe
         existing = table.get_item(Key=key)
         if "Item" not in existing:
-            return {
-                "statusCode": 404,
-                "body": json.dumps({"error": "Item not found."})
-            }
+            return {"statusCode": 404, "body": json.dumps({"error": "Item not found."})}
 
         update_expression = []
         expression_attrs = {}
@@ -56,7 +53,7 @@ def lambda_handler(event, context):
         if not update_expression:
             return {
                 "statusCode": 400,
-                "body": json.dumps({"error": "No valid fields provided for update."})
+                "body": json.dumps({"error": "No valid fields provided for update."}),
             }
 
         result = table.update_item(
@@ -64,20 +61,18 @@ def lambda_handler(event, context):
             UpdateExpression="SET " + ", ".join(update_expression),
             ExpressionAttributeValues=expression_attrs,
             ExpressionAttributeNames=expression_names,
-            ReturnValues="ALL_NEW"
+            ReturnValues="ALL_NEW",
         )
 
         return {
             "statusCode": 200,
-            "body": json.dumps({
-                "message": "Item updated successfully.",
-                "updatedItem": result.get("Attributes", {})
-            })
+            "body": json.dumps(
+                {
+                    "message": "Item updated successfully.",
+                    "updatedItem": result.get("Attributes", {}),
+                }
+            ),
         }
 
     except Exception as e:
-        return {
-            "statusCode": 500,
-            "body": json.dumps({"error": str(e)})
-        }
-
+        return {"statusCode": 500, "body": json.dumps({"error": str(e)})}
