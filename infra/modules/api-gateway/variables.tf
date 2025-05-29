@@ -8,7 +8,7 @@ variable "lambda_get_items_invoke_arn" {
   type        = string
 }
 
-variable "lambda_add_item_invoke_arn" {
+variable "lambda_create_item_invoke_arn" {
   description = "ARN de invocação da função Lambda create_item"
   type        = string
 }
@@ -21,7 +21,7 @@ variable "lambda_get_items_function_name" {
   type = string
 }
 
-variable "lambda_add_item_function_name" {
+variable "lambda_create_item_function_name" {
   type = string
 }
 

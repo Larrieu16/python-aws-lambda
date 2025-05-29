@@ -17,6 +17,7 @@ resource "aws_apigatewayv2_integration" "get_items_python" {
   integration_method = "POST"
 }
 
+# Nova integração para criar item
 resource "aws_apigatewayv2_integration" "create_item_python" {
   api_id             = aws_apigatewayv2_api.lambda.id
   integration_uri    = var.lambda_create_item_invoke_arn
@@ -54,6 +55,7 @@ resource "aws_apigatewayv2_route" "get_items_python" {
   authorizer_id      = aws_apigatewayv2_authorizer.cognito.id
 }
 
+# Nova rota para criar item
 resource "aws_apigatewayv2_route" "create_item_python" {
   api_id             = aws_apigatewayv2_api.lambda.id
   route_key          = "POST /lista-tarefa"
@@ -83,6 +85,7 @@ resource "aws_lambda_permission" "get_items_permission" {
   source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/lista-tarefa"
 }
 
+# Nova permissão para criar item
 resource "aws_lambda_permission" "create_item_permission" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
