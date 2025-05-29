@@ -1,7 +1,13 @@
 import os
+import sys
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
+
+
+src_path = Path(__file__).parent.parent
+sys.path.insert(0, str(src_path))
 
 os.environ["DYNAMODB_TABLE"] = "test-table"
 
@@ -9,7 +15,6 @@ os.environ["DYNAMODB_TABLE"] = "test-table"
 @pytest.fixture(autouse=True, scope="session")
 def setup_environment():
     """Fixture para garantir que a variável de ambiente esteja definida para toda a sessão de teste."""
-
     assert "DYNAMODB_TABLE" in os.environ
     yield
 

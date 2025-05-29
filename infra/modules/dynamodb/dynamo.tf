@@ -1,12 +1,12 @@
 resource "aws_dynamodb_table" "tabela_mercado" {
-  name           = "TabelaMercado"
-  billing_mode   = "PAY_PER_REQUEST"  # Sem necessidade de provisionar RCU/WCU
-  hash_key       = "PK"               # Partition key
-  range_key      = "SK"               # Sort key
+  name         = "TabelaMercado"
+  billing_mode = "PAY_PER_REQUEST" # Sem necessidade de provisionar RCU/WCU
+  hash_key     = "PK"              # Partition key
+  range_key    = "SK"              # Sort key
 
   attribute {
     name = "PK"
-    type = "S"  # S = String
+    type = "S" # S = String
   }
 
   attribute {
