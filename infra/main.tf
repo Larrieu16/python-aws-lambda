@@ -139,7 +139,7 @@ module "cognito" {
 }
 
 module "api_gateway" {
-  source                              = "./modules/api-gateway"
+  source                              = "./modules/api_gateway"
   lambda_hello_invoke_arn             = module.hello_lambda.lambda_invoke_arn
   lambda_get_items_invoke_arn         = module.get_items_lambda.lambda_invoke_arn
   lambda_create_item_invoke_arn       = module.create_item_lambda.lambda_invoke_arn
