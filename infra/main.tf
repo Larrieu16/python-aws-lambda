@@ -139,15 +139,15 @@ module "cognito" {
 }
 
 module "api_gateway" {
-  source                         = "./modules/api-gateway"
-  lambda_hello_invoke_arn        = module.hello_lambda.lambda_invoke_arn
-  lambda_get_items_invoke_arn    = module.get_items_lambda.lambda_invoke_arn
-  lambda_add_item_invoke_arn     = module.create_item_lambda.lambda_invoke_arn
-  lambda_hello_function_name     = module.hello_lambda.function_name
-  lambda_get_items_function_name = module.get_items_lambda.function_name
-  lambda_add_item_function_name  = module.create_item_lambda.function_name
-  cognito_user_pool_id           = module.cognito.user_pool_id
-  cognito_client_id              = module.cognito.client_id
+  source                              = "./modules/api-gateway"
+  lambda_hello_invoke_arn             = module.hello_lambda.lambda_invoke_arn
+  lambda_get_items_invoke_arn         = module.get_items_lambda.lambda_invoke_arn
+  lambda_create_item_invoke_arn       = module.create_item_lambda.lambda_invoke_arn
+  lambda_hello_function_name          = module.hello_lambda.function_name
+  lambda_get_items_function_name      = module.get_items_lambda.function_name
+  lambda_create_item_function_name    = module.create_item_lambda.function_name
+  cognito_user_pool_id                = module.cognito.user_pool_id
+  cognito_client_id                   = module.cognito.client_id
 }
 
 output "api_gateway_url" {
